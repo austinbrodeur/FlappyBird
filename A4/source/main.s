@@ -13,8 +13,35 @@ main:
 
 	bl	InitFrameBuffer
 	bl	clearScreen
-	bl	drawBG
+	
+drawMenu:
+	mov	r0, #0
+	mov	r1, #0
+	mov	r2, =background
+	mov	r3, #1024
+	mov	r4, #768
+	bl	drawImage
 
+	mov	r0, #350
+	mov	r1, #500
+	mov	r2, =startButton
+	mov	r3, #300
+	mov	r4, #188
+	bl	drawImage
+
+	mov	r0, #700
+	mov	r1, #500
+	mov	r2, =quitButton
+	mov	r3, #300
+	mov	r4, #188
+	bl	drawImage
+
+	mov	r0, #500
+	mov	r1, #594
+	mov	r2, =cursorButton
+	mov	r3, #150
+	mov	r4, #100
+	bl	drawImage
 
 haltLoop$:
 	b	haltLoop$
