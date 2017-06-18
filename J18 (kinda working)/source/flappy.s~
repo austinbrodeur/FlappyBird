@@ -1,0 +1,4 @@
+	.section .data
+
+.globl flappy
+flappy:	
