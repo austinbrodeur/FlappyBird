@@ -66,18 +66,24 @@ waitLoop:
 	.globl startMove
 startMove:
 	bl	clearuptoStart
+
 startLoop:
+	mov	r11, #0	
 	bl	Read_SNES
 	cmp	r10, r1
-	beq	startLoop
-//	bl	moveFlappy
+	beq	moveDown
 	mov	r10, r1
-	
 	ldr	r7, =0xFFEF
 	cmp	r1, r7
-	beq	upFlappy
+	beq	moveUp
 
-	
+moveUp:
+	bl	upFlappy
+	add	r11, r11, #1
+	cmp	r11, #10
+	blt	moveUp
+	b	startLoop
+moveDown:	bl	moveFlappy
 	b	startLoop
 	
 
