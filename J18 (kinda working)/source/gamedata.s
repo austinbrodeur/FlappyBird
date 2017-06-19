@@ -3,4 +3,5 @@
 
 .globl flappyPos
 flappyPos:	.hword 0, 400
-
+.globl	counter
+counter:	.byte	0
