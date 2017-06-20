@@ -1,0 +1,14 @@
+.section .data
+.align 2
+
+.globl flappyPos
+flappyPos:	.hword 0, 400
+
+.globl lives
+lives:		.int 3	
+
+.globl level
+level:		.int 1
+
+	.globl	level1Pillar
+level1Pillar:	.int 0, 0, 0, 0

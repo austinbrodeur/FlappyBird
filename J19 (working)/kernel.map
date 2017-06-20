@@ -1,0 +1,339 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD build/_twolives.o
+LOAD build/_threelives.o
+LOAD build/controls.o
+LOAD build/_quitbutton.o
+LOAD build/jtag.o
+LOAD build/framebuffer.o
+LOAD build/_logo.o
+LOAD build/SNES.o
+LOAD build/_sky.o
+LOAD build/draw.o
+LOAD build/_playbutton.o
+LOAD build/_creators.o
+LOAD build/_flappy.o
+LOAD build/rules.o
+LOAD build/_pipedownTop.o
+LOAD build/main.o
+LOAD build/_cursor.o
+LOAD build/_pipeDown.o
+LOAD build/_pipeupTop.o
+LOAD build/move.o
+LOAD build/_onelife.o
+LOAD build/gamedata.o
+LOAD build/_pipeUp.o
+LOAD build/_flappysky.o
+LOAD build/uptostart.o
+LOAD build/_background.o
+LOAD uart.o
+LOAD gpio.o
+
+.init           0x00008000        0x4
+ *(.init)
+ .init          0x00008000        0x4 build/main.o
+                0x00008000                _start
+
+.data           0x00009080   0x1ff538
+ *(.data)
+ .data          0x00009080     0x36d8 build/_twolives.o
+                0x00009080                twoLives
+ .data          0x0000c758     0x36d8 build/_threelives.o
+                0x0000c758                threeLives
+ .data          0x0000fe30        0x0 build/controls.o
+ .data          0x0000fe30     0x8ca0 build/_quitbutton.o
+                0x0000fe30                quitButton
+ .data          0x00018ad0        0x0 build/jtag.o
+ .data          0x00018ad0       0x70 build/framebuffer.o
+                0x00018b30                FrameBufferPointer
+ .data          0x00018b40    0x2ee00 build/_logo.o
+                0x00018b40                logo
+ .data          0x00047940        0x0 build/SNES.o
+ .data          0x00047940     0x4e20 build/_sky.o
+                0x00047940                sky
+ .data          0x0004c760        0x0 build/draw.o
+ .data          0x0004c760     0x8ca0 build/_playbutton.o
+                0x0004c760                playButton
+ .data          0x00055400     0x8ca0 build/_creators.o
+                0x00055400                creatorsNames
+ .data          0x0005e0a0      0xdac build/_flappy.o
+                0x0005e0a0                flappy
+ .data          0x0005ee4c        0x0 build/rules.o
+ .data          0x0005ee4c     0x1988 build/_pipedownTop.o
+                0x0005ee4c                pipedownTop
+ .data          0x000607d4        0x0 build/main.o
+ .data          0x000607d4     0x4e20 build/_cursor.o
+                0x000607d4                cursor
+ .data          0x000655f4     0x3200 build/_pipeDown.o
+                0x000655f4                pipeDown
+ .data          0x000687f4     0x1988 build/_pipeupTop.o
+                0x000687f4                pipeupTop
+ .data          0x0006a17c        0x0 build/move.o
+ .data          0x0006a17c     0x36d8 build/_onelife.o
+                0x0006a17c                oneLife
+ .data          0x0006d854       0x18 build/gamedata.o
+                0x0006d854                flappyPos
+                0x0006d858                level1Pillar
+                0x0006d860                lives
+                0x0006d864                score
+                0x0006d868                level
+ .data          0x0006d86c     0x3200 build/_pipeUp.o
+                0x0006d86c                pipeUp
+ .data          0x00070a6c      0xdac build/_flappysky.o
+                0x00070a6c                flappySky
+ .data          0x00071818    0x16da0 build/uptostart.o
+                0x00071818                uptoStart
+ .data          0x000885b8   0x180000 build/_background.o
+                0x000885b8                background
+ .data          0x002085b8        0x0 uart.o
+ .data          0x002085b8        0x0 gpio.o
+ *.c.o(*)
+
+.igot.plt       0x002085b8        0x0
+ .igot.plt      0x00000000        0x0 build/controls.o
+
+.text           0x002085b8      0xe30
+ *.c.o(.text)
+ *(.text)
+ .text          0x002085b8        0x0 build/_twolives.o
+ .text          0x002085b8        0x0 build/_threelives.o
+ .text          0x002085b8       0xec build/controls.o
+                0x002085b8                menuControls
+                0x00208630                waitforUp
+                0x00208654                startMove
+ .text          0x002086a4        0x0 build/_quitbutton.o
+ .text          0x002086a4       0x8c build/jtag.o
+                0x002086a4                EnableJTAG
+ .text          0x00208730       0x80 build/framebuffer.o
+                0x00208730                InitFrameBuffer
+ .text          0x002087b0        0x0 build/_logo.o
+ .text          0x002087b0      0x1e4 build/SNES.o
+                0x002087b0                Init_GPIO
+                0x002088cc                Read_SNES
+ .text          0x00208994        0x0 build/_sky.o
+ .text          0x00208994      0x4bc build/draw.o
+                0x00208994                clearScreen
+                0x00208a08                drawImage
+                0x00208b08                drawCursorPlay
+                0x00208b2c                drawCursorQuit
+                0x00208b50                clearCursorPlay
+                0x00208b74                clearCursorQuit
+                0x00208b98                drawFlappy
+                0x00208bbc                drawuptoStart
+                0x00208be0                clearuptoStart
+                0x00208c7c                drawthreeLives
+                0x00208ca0                drawtwoLives
+                0x00208cc4                drawoneLife
+                0x00208ce8                drawMenu
+                0x00208d0c                firstLevel
+ .text          0x00208e50        0x0 build/_playbutton.o
+ .text          0x00208e50        0x0 build/_creators.o
+ .text          0x00208e50        0x0 build/_flappy.o
+ .text          0x00208e50      0x1f8 build/rules.o
+                0x00208e50                groundCheck
+                0x00208e7c                pillarCheck
+                0x00208f08                scoreCheck
+                0x00208f28                incScore
+                0x00208f5c                incLevel
+                0x00208fa4                loseLife
+ .text          0x00209048        0x0 build/_pipedownTop.o
+ .text          0x00209048       0x24 build/main.o
+                0x00209064                haltLoop$
+ .text          0x0020906c        0x0 build/_cursor.o
+ .text          0x0020906c        0x0 build/_pipeDown.o
+ .text          0x0020906c        0x0 build/_pipeupTop.o
+ .text          0x0020906c       0xec build/move.o
+                0x0020906c                upFlappy
+                0x002090dc                moveFlappy
+ .text          0x00209158        0x0 build/_onelife.o
+ .text          0x00209158        0x0 build/gamedata.o
+ .text          0x00209158        0x0 build/_pipeUp.o
+ .text          0x00209158        0x0 build/_flappysky.o
+ .text          0x00209158        0x0 build/uptostart.o
+ .text          0x00209158        0x0 build/_background.o
+ .text          0x00209158      0x1b8 uart.o
+                0x00209158                InitUART
+                0x00209218                PutCharUART
+                0x00209234                GetCharUART
+                0x00209250                WriteStringUART
+                0x00209280                ReadLineUART
+ .text          0x00209310       0xd8 gpio.o
+                0x00209310                GetGpioAddress
+                0x00209318                SetGpioFunction
+                0x00209364                SetGpio
+                0x002093a0                GetGpio
+OUTPUT(build/output.elf elf32-littlearm)
+
+.glue_7         0x002093e8        0x0
+ .glue_7        0x00000000        0x0 linker stubs
+
+.glue_7t        0x002093e8        0x0
+ .glue_7t       0x00000000        0x0 linker stubs
+
+.vfp11_veneer   0x002093e8        0x0
+ .vfp11_veneer  0x00000000        0x0 linker stubs
+
+.v4_bx          0x002093e8        0x0
+ .v4_bx         0x00000000        0x0 linker stubs
+
+.iplt           0x002093e8        0x0
+ .iplt          0x00000000        0x0 build/controls.o
+
+.rel.dyn        0x002093e8        0x0
+ .rel.iplt      0x00000000        0x0 build/controls.o
+
+.bss            0x002093e8        0x0
+ .bss           0x002093e8        0x0 build/_twolives.o
+ .bss           0x002093e8        0x0 build/_threelives.o
+ .bss           0x002093e8        0x0 build/controls.o
+ .bss           0x002093e8        0x0 build/_quitbutton.o
+ .bss           0x002093e8        0x0 build/jtag.o
+ .bss           0x002093e8        0x0 build/framebuffer.o
+ .bss           0x002093e8        0x0 build/_logo.o
+ .bss           0x002093e8        0x0 build/SNES.o
+ .bss           0x002093e8        0x0 build/_sky.o
+ .bss           0x002093e8        0x0 build/draw.o
+ .bss           0x002093e8        0x0 build/_playbutton.o
+ .bss           0x002093e8        0x0 build/_creators.o
+ .bss           0x002093e8        0x0 build/_flappy.o
+ .bss           0x002093e8        0x0 build/rules.o
+ .bss           0x002093e8        0x0 build/_pipedownTop.o
+ .bss           0x002093e8        0x0 build/main.o
+ .bss           0x002093e8        0x0 build/_cursor.o
+ .bss           0x002093e8        0x0 build/_pipeDown.o
+ .bss           0x002093e8        0x0 build/_pipeupTop.o
+ .bss           0x002093e8        0x0 build/move.o
+ .bss           0x002093e8        0x0 build/_onelife.o
+ .bss           0x002093e8        0x0 build/gamedata.o
+ .bss           0x002093e8        0x0 build/_pipeUp.o
+ .bss           0x002093e8        0x0 build/_flappysky.o
+ .bss           0x002093e8        0x0 build/uptostart.o
+ .bss           0x002093e8        0x0 build/_background.o
+ .bss           0x002093e8        0x0 uart.o
+ .bss           0x002093e8        0x0 gpio.o
+
+.ARM.attributes
+                0x00000000       0x29
+ .ARM.attributes
+                0x00000000       0x29 build/_twolives.o
+ .ARM.attributes
+                0x00000029       0x29 build/_threelives.o
+ .ARM.attributes
+                0x00000052       0x29 build/controls.o
+ .ARM.attributes
+                0x0000007b       0x29 build/_quitbutton.o
+ .ARM.attributes
+                0x000000a4       0x29 build/jtag.o
+ .ARM.attributes
+                0x000000cd       0x29 build/framebuffer.o
+ .ARM.attributes
+                0x000000f6       0x29 build/_logo.o
+ .ARM.attributes
+                0x0000011f       0x29 build/SNES.o
+ .ARM.attributes
+                0x00000148       0x29 build/_sky.o
+ .ARM.attributes
+                0x00000171       0x29 build/draw.o
+ .ARM.attributes
+                0x0000019a       0x29 build/_playbutton.o
+ .ARM.attributes
+                0x000001c3       0x29 build/_creators.o
+ .ARM.attributes
+                0x000001ec       0x29 build/_flappy.o
+ .ARM.attributes
+                0x00000215       0x29 build/rules.o
+ .ARM.attributes
+                0x0000023e       0x29 build/_pipedownTop.o
+ .ARM.attributes
+                0x00000267       0x29 build/main.o
+ .ARM.attributes
+                0x00000290       0x29 build/_cursor.o
+ .ARM.attributes
+                0x000002b9       0x29 build/_pipeDown.o
+ .ARM.attributes
+                0x000002e2       0x29 build/_pipeupTop.o
+ .ARM.attributes
+                0x0000030b       0x29 build/move.o
+ .ARM.attributes
+                0x00000334       0x29 build/_onelife.o
+ .ARM.attributes
+                0x0000035d       0x29 build/gamedata.o
+ .ARM.attributes
+                0x00000386       0x29 build/_pipeUp.o
+ .ARM.attributes
+                0x000003af       0x29 build/_flappysky.o
+ .ARM.attributes
+                0x000003d8       0x29 build/uptostart.o
+ .ARM.attributes
+                0x00000401       0x29 build/_background.o
+ .ARM.attributes
+                0x0000042a       0x29 uart.o
+ .ARM.attributes
+                0x00000453       0x29 gpio.o
+
+.debug_line     0x00000000      0x661
+ .debug_line    0x00000000       0x7c build/controls.o
+ .debug_line    0x0000007c       0x61 build/jtag.o
+ .debug_line    0x000000dd       0x67 build/framebuffer.o
+ .debug_line    0x00000144       0xbc build/SNES.o
+ .debug_line    0x00000200      0x197 build/draw.o
+ .debug_line    0x00000397       0xcc build/rules.o
+ .debug_line    0x00000463       0x52 build/main.o
+ .debug_line    0x000004b5       0x7c build/move.o
+ .debug_line    0x00000531       0xb7 uart.o
+ .debug_line    0x000005e8       0x79 gpio.o
+
+.debug_info     0x00000000      0x47d
+ .debug_info    0x00000000       0x7b build/controls.o
+ .debug_info    0x0000007b       0x77 build/jtag.o
+ .debug_info    0x000000f2       0x6b build/framebuffer.o
+ .debug_info    0x0000015d       0x72 build/SNES.o
+ .debug_info    0x000001cf       0x77 build/draw.o
+ .debug_info    0x00000246       0x78 build/rules.o
+ .debug_info    0x000002be       0x6e build/main.o
+ .debug_info    0x0000032c       0x77 build/move.o
+ .debug_info    0x000003a3       0x6d uart.o
+ .debug_info    0x00000410       0x6d gpio.o
+
+.debug_abbrev   0x00000000       0xc6
+ .debug_abbrev  0x00000000       0x14 build/controls.o
+ .debug_abbrev  0x00000014       0x14 build/jtag.o
+ .debug_abbrev  0x00000028       0x14 build/framebuffer.o
+ .debug_abbrev  0x0000003c       0x14 build/SNES.o
+ .debug_abbrev  0x00000050       0x14 build/draw.o
+ .debug_abbrev  0x00000064       0x14 build/rules.o
+ .debug_abbrev  0x00000078       0x12 build/main.o
+ .debug_abbrev  0x0000008a       0x14 build/move.o
+ .debug_abbrev  0x0000009e       0x14 uart.o
+ .debug_abbrev  0x000000b2       0x14 gpio.o
+
+.debug_aranges  0x00000000      0x148
+ .debug_aranges
+                0x00000000       0x20 build/controls.o
+ .debug_aranges
+                0x00000020       0x20 build/jtag.o
+ .debug_aranges
+                0x00000040       0x20 build/framebuffer.o
+ .debug_aranges
+                0x00000060       0x20 build/SNES.o
+ .debug_aranges
+                0x00000080       0x20 build/draw.o
+ .debug_aranges
+                0x000000a0       0x20 build/rules.o
+ .debug_aranges
+                0x000000c0       0x28 build/main.o
+ .debug_aranges
+                0x000000e8       0x20 build/move.o
+ .debug_aranges
+                0x00000108       0x20 uart.o
+ .debug_aranges
+                0x00000128       0x20 gpio.o
+
+.debug_ranges   0x00000000       0x20
+ .debug_ranges  0x00000000       0x20 build/main.o
