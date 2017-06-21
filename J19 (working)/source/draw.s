@@ -229,6 +229,29 @@ drawuptoStart:
 	bx	lr
 
 
+.globl drawScoreLabel
+drawScoreLabel:
+	push	{lr}
+	mov	r0, #400
+	mov	r1, #720
+	ldr	r2, =510
+	ldr	r3, =765
+	ldr	r6, =scoreLabel
+	bl	drawImage
+	pop	{lr}
+	bx	lr
+
+.globl	drawScore
+drawScore:
+	push	{lr}
+	ldr	r0, =510
+	mov	r1, #720
+	ldr	r2, =590
+	ldr	r3, =765
+//	ldr	r6, =score0
+	bl	drawImage
+	pop	{lr}
+	bx	lr
 
 // Clears the up to start prompt off the screen
 .globl clearuptoStart
@@ -336,14 +359,14 @@ drawoneLife:
 // Calls draw methods to create the initial state of the main menu	
 .globl	drawMenu
 drawMenu:	
-	push	{lr}
+	push	{r6, lr}
 	bl	drawBG
 	bl	drawLogo
 	bl	drawPlay
 	bl	drawQuit
 	bl	drawNames
 	bl	drawCursorPlay
-	pop	{lr}
+	pop	{r6, lr}
 	bx	lr
 
 
@@ -371,18 +394,19 @@ firstLevel:
 	bl	drawBG
 	bl	drawFlappy
 	bl	drawthreeLives
+	bl	drawScoreLabel
+	ldr	r6, =score0
+	bl	drawScore
 	bl	drawuptoStart
 
 // Draw pipes section. The ground is 64 pixels tall
 	ldr	r8, =level1Pillar
 	ldr	r0, =497	// Pillar X
-	strh	r0, [r8]
-	add	r8, r8, #2
+	strh	r0, [r8], #2
 	ldr	r0, =426	// Bottom Pillar Y (top)
-	strh	r0, [r8]
-	add	r8, r8, #2
+	strh	r0, [r8], #2
 	ldr	r0, =198	// Top Pillar Y (bottom)
-	strh	r0, [r8]
+	strh	r0, [r8], #2
 // Up pipes	
 	mov	r0, #500
 	ldr	r1, =624	// 768 (bg height) - 80 (pipe section height) - 64 (ground height)
@@ -437,26 +461,281 @@ firstLevel:
 	ldr	r6, =pipedownTop
 	bl	drawImage
 	
-// End first level section
+// End first Pillar
+	ldr	r8, =level1Pillar
+	add	r8, r8, #6
+	ldr	r0, =797	// Pillar X
+	strh	r0, [r8], #2
+	ldr	r0, =544	// Bottom Pillar Y (top)
+	strh	r0, [r8], #2
+	ldr	r0, =278	// Top Pillar Y (bottom)
+	strh	r0, [r8]
+//Second Pillar Up Pip
+	mov	r0, #800
+	ldr	r1, =624	// 768 (bg height) - 80 (pipe section height) - 64 (ground height)
+	ldr	r2, =880	// 500 + 80 (pipe width)
+	ldr	r3, =704	// 627 + 80
+	ldr	r6, =pipeUp
+	bl	drawImage
 
+	mov	r0, #800
+	ldr	r1, =544	// 768 - 160 - 64
+	ldr	r2, =880	// 500 + 80
+	ldr	r3, =624	// 544 + 80
+	ldr	r6, =pipeUp
+	bl	drawImage
 
+	ldr	r0, =797	// Top is shifted left by 3 to center it
+	ldr	r1, =544	// 768 - 64 - 80 - 80 
+	ldr	r2, =883	// 497 + 86
+	ldr	r3, =582	// 544 + 38
+	ldr	r6, =pipeupTop
+	bl	drawImage
+// Second Pillar Down Pipe
+	mov	r0, #800
+	mov	r1, #0
+	ldr	r2, =880
+	ldr	r3, =80
+	ldr	r6, =pipeDown
+	bl	drawImage
 
+	mov	r0, $800
+	mov	r1, #80
+	ldr	r2, =880
+	ldr	r3, =160
+	ldr	r6, =pipeDown
+	bl	drawImage
 
+	mov	r0, $800
+	mov	r1, #160
+	ldr	r2, =880
+	ldr	r3, =240
+	ldr	r6, =pipeDown
+	bl	drawImage 
+
+	ldr	r0, =797	
+	ldr	r1, =240
+	ldr	r2, =883
+	ldr	r3, =278
+	ldr	r6, =pipedownTop
+	bl	drawImage
 	
 	pop	{r8, lr}
 	bx	lr
 
 
+.globl	drawSecondLevel
+drawSecondLevel:
+	push	{r6, lr}
+	bl	clearScreen
+	bl	drawBG
+	bl	drawFlappy
+	bl	drawScoreLabel
+	ldr	r6, =score2
+	bl	drawScore
+
+	ldr	r8, =level2Pillar
+	ldr	r0, =197			//First Pillars X
+	strh	r0, [r8], #2
+	ldr	r0, =346			// Bottom pillar top
+	strh	r0, [r8], #2	
+	ldr	r0, =198			// Top pillar bottom
+	strh	r0, [r8]
 
 
+	ldr	r8, =level2Pillar
+	add	r8, r8, #6
 
 
-
-
-
-
-
+	ldr	r0, =287			//Second Pillars
+	strh	r0, [r8], #2
+	ldr	r0, =428
+	strh	r0, [r8], #2
+	ldr	r0, =278
+	strh	r0, [r8]
 	
+	ldr	r8, =level2Pillar
+	add	r8, r8, #12
+
+	ldr	r0, =597
+	strh	r0, [r8], #2
+	ldr	r0, =268
+	strh	r0, [r8], #2
+	ldr	r0, =118
+	strh	r0, [r8]
+//first Pillar
+	mov	r0, #200			//First Up Pillars x 4
+	ldr	r1, =624
+	ldr	r2, =280
+	ldr	r3, =704
+	ldr	r6, =pipeUp
+	bl	drawImage
+
+	mov	r0, #200
+	ldr	r1, =544
+	ldr	r2, =280
+	ldr	r3, =624
+	ldr	r6, =pipeUp
+	bl	drawImage
+
+	mov	r0, #200
+	ldr	r1, =464
+	mov	r2, #280
+	ldr	r3, =544
+	ldr	r6, =pipeUp
+	bl	drawImage
+
+	mov	r0, #200
+	ldr	r1, =384
+	mov	r2, #280
+	ldr	r3, =464
+	ldr	r6, =pipeUp
+	bl	drawImage
+
+	ldr	r0, =197			//First up Pillars Top
+	ldr	r1, =346
+	ldr	r2, =283
+	ldr	r3, =384
+	ldr	r6, =pipeupTop
+	bl	drawImage
+	
+	mov	r0, #200			//First Down Pillar x2
+	mov	r1, #0
+	mov	r2, #280
+	mov	r3, #80
+	ldr	r6, =pipeDown
+	bl	drawImage
+
+	mov	r0, #200
+	mov	r1, #80
+	mov	r2, #280
+	mov	r3, #160
+	ldr	r6, =pipeDown
+	bl	drawImage
+	
+	ldr	r0, =197			//First Down Pillar Top
+	ldr	r1, =160
+	ldr	r2, =283
+	ldr	r3, =198
+	ldr	r6, =pipedownTop
+	bl	drawImage
+
+	ldr	r0, =290
+	ldr	r1, =624
+	add	r2, r0, #80
+	add	r3, r1, #80
+	ldr	r6, =pipeUp
+	bl	drawImage
+
+	ldr	r0, =290
+	ldr	r1, =544
+	add	r2, r0, #80
+	add	r3, r1, #80
+	ldr	r6, =pipeUp
+	bl	drawImage
+
+	ldr	r0, =290
+	ldr	r1, =464
+	add	r2, r0, #80
+	add	r3, r1, #80
+	ldr	r6, =pipeUp
+	bl	drawImage
+
+	ldr	r0, =287
+	ldr	r1, =428
+	add	r2, r0, #86
+	add	r3, r1, #38
+	ldr	r6, =pipeupTop
+	bl	drawImage
+
+	ldr	r0, =290
+	mov	r1, #0
+	add	r2, r0, #80
+	add	r3, r1, #80
+	ldr	r6, =pipeDown
+	bl	drawImage
+
+	ldr	r0, =290
+	mov	r1, #80
+	add	r2, r0, #80
+	add	r3, r1, #80
+	ldr	r6, =pipeDown
+	bl	drawImage
+
+	ldr	r0, =290
+	mov	r1, #160
+	add	r2, r0, #80
+	add	r3, r1, #80
+	ldr	r6, =pipeDown
+	bl	drawImage
+
+	ldr	r0, =287
+	mov	r1, #240
+	add	r2, r0, #86
+	add	r3, r1, #38
+	ldr	r6, =pipedownTop
+	bl	drawImage
+
+	ldr	r0, =600
+	ldr	r1, =624
+	add	r2, r0, #80
+	add	r3, r1, #80
+	ldr	r6, =pipeUp
+	bl	drawImage
+
+	ldr	r0, =600
+	ldr	r1, =544
+	add	r2, r0, #80
+	add	r3, r1, #80
+	ldr	r6, =pipeUp
+	bl	drawImage
+
+	ldr	r0, =600
+	ldr	r1, =464
+	add	r2, r0, #80
+	add	r3, r1, #80
+	ldr	r6, =pipeUp
+	bl	drawImage
+
+	ldr	r0, =600
+	ldr	r1, =384
+	add	r2, r0, #80
+	add	r3, r1, #80
+	ldr	r6, =pipeUp
+	bl	drawImage
+
+	ldr	r0, =600
+	ldr	r1, =304
+	add	r2, r0, #80
+	add	r3, r1, #80
+	ldr	r6, =pipeUp
+	bl	drawImage
+
+	ldr	r0, =597
+	ldr	r1, =268
+	add	r2, r0, #86
+	add	r3, r1, #38
+	ldr	r6, =pipeupTop
+	bl	drawImage
+
+	mov	r0, #600
+	mov	r1, #0
+	add	r2, r0, #80
+	add	r3, r1, #80
+	ldr	r6, =pipeDown
+	bl	drawImage
+
+	ldr	r0, =597
+	mov	r1, #80
+	add	r2, r0, #86
+	add	r3, r1, #38
+	ldr	r6, =pipedownTop
+	bl	drawImage
+
+
+
+	pop	{r6, lr}
+	bx	lr
 .section	.data
 
 // Contains ascii information for images
