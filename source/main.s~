@@ -1,0 +1,63 @@
+.section    .init
+.globl     _start
+
+_start:
+    b       main
+    
+.section .text
+
+main:
+    	mov    	sp, #0x8000 // Initializing the stack pointer
+	bl	EnableJTAG // Enable JTAG
+
+
+	bl	InitFrameBuffer
+	bl	Init_GPIO
+	bl	clearScreen
+	bl	drawMenu
+	mov	r4, #1			//Set value for start or quit game
+loop:	bl	Read_SNES
+	cmp	r10, r1
+	beq	loop
+	mov	r10, r1
+
+	ldr	r7, =0xFFEF
+	cmp	r1, r7
+	beq	upPressed
+	ldr	r7, =0xFFDF
+	cmp	r1, r7
+	beq	downPressed
+	ldr	r7, =0xFEFF		
+	cmp	r1, r7
+	beq	aPressed
+	b	loop
+aPressed:
+	cmp	r4, #1
+	beq	startGame
+	b	haltLoop$
+startGame:
+	bl	clearScreen
+	bl	drawBird
+	b	loop
+upPressed:
+	bl	clearScreen
+	bl	drawMenu
+	mov	r4, #1			//r4 = start game	
+	b	loop
+downPressed:
+	bl	clearScreen
+	bl	drawMenu
+	mov	r4, #2			//r4 = quit game
+	b	loop
+haltLoop$:
+	b	haltLoop$
+
+end:
+
+	pop		{r4, r5, pc}
+
+
+
+
+.section .data  
+

@@ -1,0 +1,21 @@
+	.section .text
+
+.globl groundCheck
+groundCheck:
+	push	{r0-r4, lr}
+	
+	ldr	r4, =flappyPos
+	
+	ldrh	r0, [r4, #2]
+	cmp	r0, #704
+	bgt	loseLife
+
+
+
+
+
+
+
+
+
+
