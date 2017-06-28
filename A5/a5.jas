@@ -1,0 +1,132 @@
+.constant
+OBJREF	0x40
+.end-constant
+
+.main
+
+.var
+.end-var
+
+start:	
+
+	LDC_W	OBJREF
+	BIPUSH	3
+	BIPUSH	4
+	INVOKEVIRTUAL	IHypotenuse
+	
+	IRETURN
+.end-main
+
+
+
+.method IHypotenuse(Int1, Int2)
+.var
+i1			//First Integer 
+i2			//Second Integer
+i1sq			//First Integer Square 
+i2sq			//Second Interger Square
+.end-var
+
+IHypotenuse:
+	//Store Int1 and Int2 into local variable
+	ILOAD	Int1
+	ISTORE	i1
+	ILOAD 	Int2
+	ISTORE 	i2
+i1start:
+	//Load local i1, decrementing for the loop. If i1 -1 < 0 go to i2start
+	ILOAD	i1
+	BIPUSH	1
+	ISUB	
+	ISTORE 	i1
+	ILOAD	i1
+	IFLT	i2start
+	//Load i1sq (start with 0) and add Int1 with i1 times
+	ILOAD 	i1sq
+	ILOAD	Int1
+	IADD
+	ISTORE	i1sq
+	GOTO	i1start
+i2start:
+	//Load local i2, decrementing for loop, If i2 - 1 < 0 go to result
+	ILOAD	i2
+	BIPUSH	1
+	ISUB
+	ISTORE	i2
+	ILOAD	i2
+	IFLT	result
+	//Load i2sq (start with 0) and add Int2 with i2 times
+	ILOAD	i2sq
+	ILOAD	Int2
+	IADD	
+	ISTORE	i2sq
+	GOTO	i2start
+result:
+	//Hypoteneus^2 = Int1^2 + Int2^2
+	ILOAD	i1sq
+	ILOAD	i2sq
+	IADD
+	IRETURN
+
+
+.end-method
+
+
+
+
+
+.method IFee(hours)
+
+.var
+money
+.end-var
+
+IFee:
+	ILOAD 	hours		// Checks if the hours are less than or equal to 2. Returns 50 if true.
+	BIPUSH 	3
+	ISUB
+	IFLT 	returnFive
+
+	ILOAD	hours		// Checks if the hours are greater than or equal to 22. Branches to return max, otherwise go to calculate. 
+	BIPUSH	23
+	ISUB
+	IFLT	calculate
+	GOTO	returnMax
+	IRETURN	
+
+calculate:			// Calculates the cost if the value isn't $5 or $33
+	ILOAD	hours
+	BIPUSH	1
+	IADD
+	ISTORE	hours
+top:				// Top of the calculate loop
+	ILOAD	hours
+	BIPUSH	1
+	ISUB
+	ISTORE 	hours
+	ILOAD	hours
+	IFEQ	return
+	BIPUSH	15
+	ILOAD	money
+	IADD
+	ISTORE	money
+	GOTO	top
+		
+return:				// Returns the money value in calculate
+	ILOAD	money
+	IRETURN
+
+returnFive:			// Returns 50 (for $5)
+	// returns 50
+	BIPUSH	50
+	IRETURN
+
+returnMax:			// Returns 330 (for $33)
+	BIPUSH	127
+	BIPUSH	127
+	IADD
+	BIPUSH	76
+	IADD
+	IRETURN
+
+.end-method
