@@ -1,0 +1,304 @@
+.constant
+OBJREF	0x40
+.end-constant
+
+.main
+
+.var
+Int1
+Int2
+.end-var
+
+start:	
+	LDC_W OBJREF		//Get first Int
+	INVOKEVIRTUAL getnum
+	ISTORE	Int1		//Store it into Int1
+
+	LDC_W	OBJREF		//Get second Int
+	INVOKEVIRTUAL	getnum
+	ISTORE	Int2		//Store into Int2
+
+	LDC_W	OBJREF
+	ILOAD	Int1		//Load Int1 Int 2 and call IHypotenuse
+	ILOAD	Int2
+	INVOKEVIRTUAL	IHypotenuse
+	
+	IRETURN
+.end-main
+
+
+
+.method IHypotenuse(Int1, Int2)
+.var
+i1			//First Integer 
+i2			//Second Integer
+i1sq			//First Integer Square 
+i2sq			//Second Interger Square
+hypotenuse		//Hypotenuse
+.end-var
+
+IHypotenuse:
+	//Store Int1 and Int2 into local variable
+	ILOAD	Int1
+	ISTORE	i1
+	ILOAD 	Int2
+	ISTORE 	i2
+	//Set i1sq i2sq = 0
+	BIPUSH	0x0
+	DUP	
+	ISTORE	i1sq
+	ISTORE	i2sq
+i1start:
+	//Load local i1, decrementing for the loop. If i1 -1 < 0 go to i2start
+	ILOAD	i1
+	BIPUSH	1
+	ISUB	
+	ISTORE 	i1
+	ILOAD	i1
+	IFLT	i2start
+	//Load i1sq (start with 0) and add Int1 with i1 times
+	ILOAD 	i1sq
+	ILOAD	Int1
+	IADD
+	ISTORE	i1sq
+	GOTO	i1start
+i2start:
+	//Load local i2, decrementing for loop, If i2 - 1 < 0 go to result
+	ILOAD	i2
+	BIPUSH	1
+	ISUB
+	ISTORE	i2
+	ILOAD	i2
+	IFLT	result
+	//Load i2sq (start with 0) and add Int2 with i2 times
+	ILOAD	i2sq
+	ILOAD	Int2
+	IADD	
+	ISTORE	i2sq
+	GOTO	i2start
+result:
+	//Hypotenuse^2 = Int1^2 + Int2^2
+	ILOAD	i1sq
+	ILOAD	i2sq
+	IADD
+	ISTORE	hypotenuse
+	LDC_W	OBJREF
+	ILOAD	hypotenuse
+	INVOKEVIRTUAL	print
+	IRETURN
+
+
+.end-method
+
+
+
+
+
+.method IFee(hours)
+
+.var
+money
+.end-var
+
+IFee:
+	ILOAD 	hours		// Checks if the hours are less than or equal to 2. Returns 50 if true.
+	BIPUSH 	3
+	ISUB
+	IFLT 	returnFive
+
+	ILOAD	hours		// Checks if the hours are greater than or equal to 22. Branches to return max, otherwise go to calculate. 
+	BIPUSH	23
+	ISUB
+	IFLT	calculate
+	GOTO	returnMax
+	IRETURN	
+
+calculate:			// Calculates the cost if the value isn't $5 or $33
+	ILOAD	hours
+	BIPUSH	1
+	IADD
+	ISTORE	hours
+top:				// Top of the calculate loop
+	ILOAD	hours
+	BIPUSH	1
+	ISUB
+	ISTORE 	hours
+	ILOAD	hours
+	IFEQ	return
+	BIPUSH	15
+	ILOAD	money
+	IADD
+	ISTORE	money
+	GOTO	top
+		
+return:				// Returns the money value in calculate
+	ILOAD	money
+	IRETURN
+
+returnFive:			// Returns 50 (for $5)
+	// returns 50
+	BIPUSH	50
+	IRETURN
+
+returnMax:			// Returns 330 (for $33)
+	BIPUSH	127
+	BIPUSH	127
+	IADD
+	BIPUSH	76
+	IADD
+	IRETURN
+
+.end-method
+
+
+.method getnum()
+.var
+a
+.end-var
+
+	BIPUSH 0x0		// initialize a
+        ISTORE a
+geta:	IN			// read key press
+	DUP			// duplicate key for comparison
+	BIPUSH 0xa		// if key = cr,
+	IF_ICMPEQ return	//   return
+	DUP
+	BIPUSH 0x30		// if key < "0"
+	ISUB			//
+	IFLT geta4		//   goto geta4 (key is not a hex digit)
+    	DUP
+	BIPUSH 0x3a		// else if key < ":"
+	ISUB			//
+	IFLT geta2		//   goto geta2 (key is numeric character - "0"-"9")
+	DUP
+	BIPUSH 0x41		// else if key < "A"
+	ISUB			//
+	IFLT geta4		//   goto geta4 (key is not a hex digit)
+	DUP
+	BIPUSH 0x46		// else if key > "F"
+	SWAP			//  
+	ISUB			//
+	IFLT geta4		//   goto geta4 (key is not a hex digit)
+	DUP			// else (key is letter - "A"-"F")
+	OUT			//   print key
+	BIPUSH 0x37		//   convert key from character to number
+	ISUB			//
+	GOTO geta3		//   goto geta3
+geta2:  DUP
+	OUT			// print key (numeric character)
+	BIPUSH 0x30		// convert key from character to number
+	ISUB
+geta3:  ILOAD a			// shift a left 8 bits
+	DUP
+	IADD
+	DUP
+	IADD
+	DUP
+	IADD
+	DUP
+	IADD
+	IADD			// add key to a
+	ISTORE a
+	GOTO geta		// get next key
+
+geta4:	POP			// pop invalid character
+	GOTO geta		// get next key
+
+return: OUT			// print cr
+	ILOAD a			// load a as return value
+	IRETURN			// return
+.end-method
+
+.method print( total ) 		// print converts a number into a string of
+				//   characters and prints them.  All of the characters
+				//   are pushed onto the stack, least significant
+				//   digit first, then popped off and printed.
+.var
+place
+index
+.end-var
+
+print: 	BIPUSH 0x9		// there are 8 nibbles in each integer--setting
+				//   this as nine pushes 10 characters onto the
+ 				//   stack, thus a total of ten printed digits,
+				//   but setting this less does not remove the
+				//   two leading zeros, just removes significant
+				//   digits
+	ISTORE index
+	BIPUSH 0x1		// comparison bit
+	ISTORE place
+print1:	BIPUSH 0x0
+	ILOAD index		// index = index - 1
+	BIPUSH 0x1
+	ISUB
+	DUP
+	IFEQ pall		// if index = 0  goto pall
+	ISTORE index
+	ILOAD total		// else
+	ILOAD place		//
+	IAND			//   if 1st bit of current nibble is zero (total & place)
+	IFEQ print2		//     goto print2
+	BIPUSH 0x1		//   else set first bit of character
+	IADD
+print2: ILOAD place		//   place = place << 1 
+	DUP
+	IADD
+	ISTORE place
+	ILOAD total
+	ILOAD place
+	IAND			//   if 2nd bit of current nibble is zero (total & place)
+	IFEQ print3		//     goto print3
+	BIPUSH 0x2		//   else set second bit of character
+	IADD	
+print3: ILOAD place		//   place = place << 1
+	DUP
+	IADD
+	ISTORE place
+	ILOAD total
+	ILOAD place
+	IAND			//   if 3rd bit of current nibble is zero (total & place)
+	IFEQ print4		//     goto print4
+	BIPUSH 0x4		//   else set second bit of character
+	IADD	
+print4: ILOAD place		//   place = place << 1
+	DUP
+	IADD
+	ISTORE place
+	ILOAD total
+	ILOAD place
+	IAND			//   if 4th bit of current nibble is zero (total & place)
+	IFEQ print5		//     goto print5
+	BIPUSH 0x8		//   else set second bit of character
+	IADD	
+print5: ILOAD place		//   place = place << 1
+	DUP
+	IADD
+	ISTORE place
+	GOTO print1
+	
+pall:   POP			// Pop off leading 0's
+	POP
+	BIPUSH 0x9
+	ISTORE index
+pall1:	ILOAD index		// index = index - 1
+	BIPUSH 0x1
+	ISUB
+	DUP
+	IFEQ return		// if index = 0  return
+	ISTORE index
+	DUP
+	BIPUSH 0xa		// else if character < 0xa goto pall1
+	ISUB
+	IFLT pall2
+	BIPUSH 0x37		// else convert character to "A"-"F"
+	IADD
+	OUT			// print character
+	GOTO pall1		// goto pall (prepare & print next character)
+pall2:	BIPUSH 0x30		// convert character to "0"-"9"
+	IADD
+	OUT			// print character
+	GOTO pall1		// goto pall1 (prepare & print next character)
+return:	BIPUSH 0xa		// print cr
+	OUT
+	IRETURN			// no return value
+.end-method
