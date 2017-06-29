@@ -243,28 +243,31 @@ in1	OPC=H=-1
 
 //IHypotenuse
 hypotenuse1	MAR = SP; rd
-hypotenuse2	H = MDR			//Int 1
-hypotenuse3	MDR = MDR - 1
-hypotenuse4	OPC = MDR		//i1
-hypotenuse5	N = OPC; if (N) goto hypotenuse8; else goto hypotenuse6
-hypotenuse6	MDR = TOS = MDR + H; wr	
-hypotenuse7	OPC = OPC-1; goto hypotenuse4
+hypotenuse2	H = TOS			//Int 1
+hypotenuse3	OPC = MDR		//i1
+hypotenuse4	OPC = OPC-1		//decrementing i1
+hypotenuse5	Z = OPC; if (Z) goto hypotenuse8; else goto hypotenuse6		//If i1 = 0 go to hypotenuse8
+hypotenuse6	MDR = TOS = TOS + H; wr		//MDR = i1sq + Int1 (TOS = i1sq)
+hypotenuse7	MDR = OPC; goto hypotenuse3	//reset MDR = i1, go back to hypotenuse3
 
-hypotenuse8	MAR = SP - 1; rd		// Set MAR to SP - 1; read 2nd word from stack
-hypotenuse9	MAR = SP			// Set MAR to top word
-hypotenuse10	H = MDR; wr			// Save TOS in H; write 2nd word to top of stack
-hypotenuse11	MDR = TOS			// Copy old TOS to MDR
-hypotenuse12	MAR = SP - 1; wr		// Set MAR to SP - 1; write as 2nd word on stack
-hypotenuse13	TOS = H; goto hypotenuse14		// Update TOS
+//Swap TOS with next of TOS
+hypotenuse8	MAR = SP - 1; rd		
+hypotenuse9	MAR = SP			
+hypotenuse10	H = MDR; wr			
+hypotenuse11	MDR = TOS			
+hypotenuse12	MAR = SP - 1; wr		
+hypotenuse13	TOS = H		
 
+//Same process with Int2
 hypotenuse14	MAR = SP; rd
-hypotenuse15	H = MDR
-hypotenuse16	MDR = MDR - 1
-hypotenuse17	OPC = MDR
-hypotenuse18	N = OPC; if (N) goto hypotenuse21 ; else goto hypotenuse19 
-hypotenuse19	MDR = TOS = MDR + H; wr
-hypotenuse20	OPC = OPC-1; goto hypotenuse14
+hypotenuse15	H = TOS
+hypotenuse16	OPC = MDR
+hypotenuse17	OPC = OPC - 1
+hypotenuse18	Z = OPC; if (Z) goto hypotenuse21 ; else goto hypotenuse19 
+hypotenuse19	MDR = TOS = TOS + H; wr
+hypotenuse20	MDR = OPC; goto hypotenuse16
 
+//Pop 2 TOS and add them together
 hypotenuse21	MAR = SP = SP - 1; rd		// Read in next-to-top word on stack
 hypotenuse22	H = TOS				// H = top of stack
 hypotenuse23	MDR = TOS = MDR + H; wr; goto Main1	// Add top two words; write to top of stack
