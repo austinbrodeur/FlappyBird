@@ -1,0 +1,19 @@
+// Created by Austin Brodeur and Quang Nguygen
+// This file is used to test the instructions defined in the .mal file
+
+
+.constant
+.end-constant
+
+.main
+
+.var
+.end-var
+
+start:
+
+  BIPUSH -1
+  IFEE
+  IRETURN
+
+.end-main
