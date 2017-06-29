@@ -44,6 +44,7 @@
 .label	out1		0xFD
 .label	in1		0xFC
 .label	hypotenuse1	0xAA
+.label	fee1		0xBB
 // default instruction to place in any unused addresses of the control store
 .default	goto err1
 
@@ -240,32 +241,61 @@ in1	OPC=H=-1
 
 
 // Assignment Material
+fee1	MAR = SP; rd			//Read the hour, save it into MDR
+	H = 1 				//H = 1
+	H = H + 1			//H = 2
+	MDR = MDR - H			//hour - 2 if zero goto fee3, else goto fee2
+	Z = MDR; if (Z) goto fee3; else goto fee2
+fee2	H = H << 8
+	MDR = H 
+	H = 1 << 8 
+	MDR = MDR + H
+	MDR = MDR - 1		 
+	H = MDR
+	MAR = SP; rd
+	OPC = MDR - H
+	Z = OPC; if (Z) goto fee5; else goto fee4
+fee3	MDR = H = H + 1			//MDR = H + 1 = 2 + 1 = 3
+	MDR = MDR + H;wr; goto Main1	//MDR = MDR + H = 3 + 2 = 5, write, goto Main1
+fee4	goto Main1			//Where you gonna do calculation
+fee5	OPC = 1 			//OPC = 1
+	OPC = OPC + 1			//OPC = 2
+	OPC = OPC <<8			//OPC = 2 * 8 = 16
+	H = OPC				//H = OPC = 16
+	OPC = OPC + H  			//OPC = OPC + H = 16 + 16 = 32
+	OPC = OPC + 1			//OPC = 32 + 1 = 33
+	MDR = OPC; wr; goto Main1	//MDR = OPC = 33, write,  goto Main1
+
 
 //IHypotenuse
 hypotenuse1	MAR = SP; rd
-hypotenuse2	H = MDR			//Int 1
-hypotenuse3	MDR = MDR - 1
-hypotenuse4	OPC = MDR		//i1
-hypotenuse5	N = OPC; if (N) goto hypotenuse8; else goto hypotenuse6
-hypotenuse6	MDR = TOS = MDR + H; wr	
-hypotenuse7	OPC = OPC-1; goto hypotenuse4
+hypotenuse2	H = TOS			//Int 1
+hypotenuse3	OPC = MDR		//i1
+hypotenuse4	OPC = OPC-1		//decrementing i1
+hypotenuse5	Z = OPC; if (Z) goto hypotenuse8; else goto hypotenuse6		//If i1 = 0 go to hypotenuse8
+hypotenuse6	MDR = TOS = TOS + H; wr		//MDR = i1sq + Int1 (TOS = i1sq)
+hypotenuse7	MDR = OPC; goto hypotenuse3	//reset MDR = i1, go back to hypotenuse3
 
-hypotenuse8	MAR = SP - 1; rd		// Set MAR to SP - 1; read 2nd word from stack
-hypotenuse9	MAR = SP			// Set MAR to top word
-hypotenuse10	H = MDR; wr			// Save TOS in H; write 2nd word to top of stack
-hypotenuse11	MDR = TOS			// Copy old TOS to MDR
-hypotenuse12	MAR = SP - 1; wr		// Set MAR to SP - 1; write as 2nd word on stack
-hypotenuse13	TOS = H; goto hypotenuse14		// Update TOS
+//Swap TOS with next of TOS
+hypotenuse8	MAR = SP - 1; rd		
+hypotenuse9	MAR = SP			
+hypotenuse10	H = MDR; wr			
+hypotenuse11	MDR = TOS			
+hypotenuse12	MAR = SP - 1; wr		
+hypotenuse13	TOS = H		
 
+//Same process with Int2
 hypotenuse14	MAR = SP; rd
-hypotenuse15	H = MDR
-hypotenuse16	MDR = MDR - 1
-hypotenuse17	OPC = MDR
-hypotenuse18	N = OPC; if (N) goto hypotenuse21 ; else goto hypotenuse19 
-hypotenuse19	MDR = TOS = MDR + H; wr
-hypotenuse20	OPC = OPC-1; goto hypotenuse14
+hypotenuse15	H = TOS
+hypotenuse16	OPC = MDR
+hypotenuse17	OPC = OPC - 1
+hypotenuse18	Z = OPC; if (Z) goto hypotenuse21 ; else goto hypotenuse19 
+hypotenuse19	MDR = TOS = TOS + H; wr
+hypotenuse20	MDR = OPC; goto hypotenuse16
 
+//Pop 2 TOS and add them together
 hypotenuse21	MAR = SP = SP - 1; rd		// Read in next-to-top word on stack
 hypotenuse22	H = TOS				// H = top of stack
 hypotenuse23	MDR = TOS = MDR + H; wr; goto Main1	// Add top two words; write to top of stack
+
 
